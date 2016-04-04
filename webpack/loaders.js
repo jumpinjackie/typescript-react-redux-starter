@@ -20,8 +20,17 @@ exports.html = {
 
 exports.css = {
   test: /\.css$/,
-  loader: 'style-loader!css-loader!postcss-loader',
-  exclude: /node_modules/
+  loader: 'style-loader!css-loader!postcss-loader'
+};
+
+exports.less ={
+  test: /\.less$/,
+  loader: 'style-loader!css-loader!less-loader'
+};
+
+exports.image = {
+  test: /\.(png|jpg)$/,
+  loader: "file-loader"
 };
 
 exports.svg = makeUrlLoader(/\.svg$/);
@@ -33,7 +42,6 @@ exports.ttf = makeUrlLoader(/\.ttf$/);
 function makeUrlLoader (pattern) {
   return {
     test: pattern,
-    loader: 'url',
-    exclude: /node_modules/
+    loader: 'file-loader'
   };
 }

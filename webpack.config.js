@@ -75,6 +75,9 @@ module.exports = {
   devtool: 'source-map',
 
   resolve: {
+    modulesDirectories: [
+      'node_modules'
+    ],
     extensions: ['', '.webpack.js', '.web.js', '.tsx', '.ts', '.js']
   },
 
@@ -92,7 +95,9 @@ module.exports = {
     loaders: [
       loaders.tsx,
       loaders.html,
+      loaders.less,
       loaders.css,
+      loaders.image,
       loaders.svg,
       loaders.eot,
       loaders.woff,

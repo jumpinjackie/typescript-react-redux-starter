@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Modal, ModalContent } from '../modal';
+import { Modal } from 'react-bootstrap';
 import LoginForm from './login-form';
 
 interface ILoginModalProps extends React.Props<any> {
@@ -9,17 +9,25 @@ interface ILoginModalProps extends React.Props<any> {
   onSubmit: () => void;
 };
 
-function LoginModal({ isVisible, isPending, hasError, onSubmit }) {
-  return <Modal isVisible={ isVisible }>
-    <ModalContent>
-      <h1 className="mt0">Login</h1>
-
-      <LoginForm
-        isPending={ isPending }
-        hasError={ hasError }
-        onSubmit={ onSubmit } />
-    </ModalContent>
-  </Modal>;
+export default class LoginModal extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      show: false
+    };
+  }
+  render() {
+    let close = () => this.setState({ show: false});
+    return <Modal show={ this.props.isVisible } onHide={ close } aria-labelledby="login-modal-title">
+      <Modal.Header>
+        <Modal.Title id="login-modal-title">Login</Modal.Title> 
+      </Modal.Header>
+      <Modal.Body>
+        <LoginForm
+          isPending={ this.props.isPending }
+          hasError={ this.props.hasError }
+          onSubmit={ this.props.onSubmit } />
+      </Modal.Body>
+    </Modal>;
+  }
 }
-
-export default LoginModal;

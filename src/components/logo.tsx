@@ -6,7 +6,7 @@ interface ILogoProps {
 };
 
 const Logo = () => (
-  <div className="flex items-center">
+  <div className="brand">
     <img style={ styles }
       src={ LogoImage }
       alt="Rangle.io" />

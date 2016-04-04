@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Jumbotron } from 'react-bootstrap';
 import { increment, decrement } from '../actions/counter';
 import Counter from '../components/counter';
-import Container from '../components/container';
 
 interface ICounterPageProps extends React.Props<any> {
   counter: number;
@@ -23,22 +23,17 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-class CounterPage extends React.Component<ICounterPageProps, void> {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class CounterPage extends React.Component<ICounterPageProps, void> {
   render() {
     const { counter, increaseCounter, decreaseCounter } = this.props;
  
-    return <Container size={2} center>
-      <h2 className="center caps" id="qa-counter-heading">Counter</h2>
-
+    return <Jumbotron>
+      <h1>Counter</h1>
       <Counter
         counter={ counter }
         increment={ increaseCounter }
         decrement={ decreaseCounter } />
-    </Container>;
+    </Jumbotron>;
   };
 }
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CounterPage);

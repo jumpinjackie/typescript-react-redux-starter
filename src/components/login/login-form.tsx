@@ -1,12 +1,6 @@
 import * as React from 'react';
 import * as ReduxForm from 'redux-form';
-import Form from '../form/form';
-import FormGroup from '../form/form-group';
-import FormLabel from '../form/form-label';
-import FormError from '../form/form-error';
-import Input from '../form/input';
-import Button from '../button';
-import Alert from '../alert';
+import { Input, Alert, Button } from 'react-bootstrap';
 
 interface ILoginFormProps {
   onSubmit: () => void;
@@ -35,43 +29,31 @@ class LoginForm extends React.Component<ILoginFormProps, void> {
       }
     } = this.props;
 
-    return <Form handleSubmit={ handleSubmit }>
-      <Alert isVisible={ isPending }>Loading...</Alert>
-      <Alert id="qa-alert" isVisible={ hasError } status="error">
-        Invalid username and password
-      </Alert>
+    let loadingAlert = null;
+    if (isPending)
+      loadingAlert = <Alert bsStyle="info">Loading ...</Alert>;
+    let errorAlert = null;
+    if (hasError)
+      errorAlert = <Alert bsStyle="danger">Invalid username and/or password</Alert>;
 
-      <FormGroup>
-        <FormLabel id="qa-uname-label">Username</FormLabel>
-        <Input type="text" fieldDefinition={ username } id="qa-uname-input"/>
-        <FormError id="qa-uname-validation"
-          isVisible={ !!(username.touched && username.error) }>
-          { username.error }
-        </FormError>
-      </FormGroup>
-
-      <FormGroup>
-        <FormLabel id="qa-password-label">Password</FormLabel>
-        <Input type="password"
-          fieldDefinition={ password }
-          id="qa-password-input" />
-        <FormError id="qa-password-validation"
-          isVisible={ !!(password.touched && password.error) }>
-          { password.error }
-        </FormError>
-      </FormGroup>
-
-      <FormGroup>
-        <Button type="submit" className="mr1" id="qa-login-button">
-          Login
-        </Button>
-        <Button onClick={ resetForm }
-          type="reset"
-          className="bg-red" id="qa-clear-button">
-          Clear
-        </Button>
-      </FormGroup>
-    </Form>;
+    let valErrorUsername = null;
+    if (!!(username.touched && username.error))
+      valErrorUsername = <Alert bsStyle="danger"><strong>{username.error}</strong></Alert>
+    
+    let valErrorPassword = null;
+    if (!!(password.touched && password.error))
+      valErrorPassword = <Alert bsStyle="danger"><strong>{password.error}</strong></Alert>
+    
+    return <form onSubmit={ handleSubmit }>
+      {loadingAlert}
+      {errorAlert}
+      <Input type="text" label="Username" placeholder="Username" {...username} />
+      {valErrorUsername}
+      <Input type="password" label="Password" placeholder="Password" {...password} />
+      {valErrorPassword}
+      <Button type="submit">Login</Button>
+      <Button onClick={ resetForm }>Clear</Button>
+    </form>;
   }
 
   static validate(values) {

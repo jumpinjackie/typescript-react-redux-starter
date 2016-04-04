@@ -2,12 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { loginUser, logoutUser } from '../actions/session';
 import { Link } from 'react-router';
-import Button from '../components/button';
-import Content from '../components/content';
 import LoginModal from '../components/login/login-modal';
 import Logo from '../components/logo';
-import Navigator from '../components/navigator';
-import NavigatorItem from '../components/navigator-item';
+import { Navbar, Nav, NavItem, Button, NavDropdown, MenuItem } from 'react-bootstrap';
+import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap';
 
 interface IAppProps extends React.Props<any> {
   session: any;
@@ -29,13 +27,42 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-class App extends React.Component<IAppProps, void> {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class App extends React.Component<IAppProps, void> {
   render() {
     const { children, session, login, logout } = this.props;
     const token = session.get('token', false);
     const isLoggedIn = token && token !== null && typeof token !== 'undefined';
     const firstName = session.getIn(['user', 'firstName'], '');
     const lastName = session.getIn(['user', 'lastName'], '');
+
+    let loggedInMenu = null;
+    let loggedInSection = null;
+    if (isLoggedIn) {
+      loggedInMenu = <Nav>
+        <IndexLinkContainer to="/" activeClassName="active">
+          <NavItem>Counter</NavItem>
+        </IndexLinkContainer> 
+        <LinkContainer to="/about" activeClassName="active">
+          <NavItem>About Us</NavItem>
+        </LinkContainer>
+      </Nav>;
+      loggedInSection = <Nav pullRight>
+        <NavItem>
+          <b>{ `${ firstName } ${ lastName }` }</b>
+        </NavItem>
+        <NavItem onClick={ logout }>
+          Logout
+        </NavItem>
+      </Nav>;
+    }
+    
+    let body = null;
+    if (isLoggedIn) {
+      body = <div className="container-fluid">
+        { children }
+      </div>;
+    }
 
     return (
       <div>
@@ -44,35 +71,18 @@ class App extends React.Component<IAppProps, void> {
           isPending={ session.get('isLoading', false) }
           hasError={ session.get('hasError', false) }
           isVisible={ !isLoggedIn } />
-        <Navigator>
-          <NavigatorItem mr>
-            <Logo />
-          </NavigatorItem>
-          <NavigatorItem isVisible={ isLoggedIn } mr>
-            <Link to="/">Counter</Link>
-          </NavigatorItem>
-          <NavigatorItem isVisible={ isLoggedIn }>
-            <Link to="/about">About Us</Link>
-          </NavigatorItem>
-          <div className="flex flex-auto"></div>
-          <NavigatorItem isVisible={ isLoggedIn } mr>
-            <b>{ `${ firstName } ${ lastName }` }</b>
-          </NavigatorItem>
-          <NavigatorItem isVisible={ isLoggedIn }>
-            <Button onClick={ logout } className="bg-red white">
-              Logout
-            </Button>
-          </NavigatorItem>
-        </Navigator>
-        <Content isVisible={ isLoggedIn }>
-          { children }
-        </Content>
+        <Navbar fluid>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <span>Rangle.io</span>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          { loggedInMenu }
+          { loggedInSection }
+        </Navbar>
+        {body}
       </div>
     );
   };
 };
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
